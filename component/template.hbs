@@ -1,75 +1,134 @@
 <section class="horizontal-form">
-  <div class="container-fluid">
-    {{partial "host/add-common"}}
+	<form>
+		<div class="container-fluid">
+			<div class="over-hr r-mt20 r-mb20">
+				<span>ACCOUNT ACCESS</span>
+			</div>
+			<div class="row {{if isStep1 'form-group'}}">
+				<div class="col-sm-12 col-md-2 form-label">
+					<label class="form-control-static">Endpoint</label>
+				</div>
+				<div class="col-sm-12 col-md-4">
+					{{#if isStep1}} {{input type="text" value=model.%%DRIVERNAME%%Config.endpoint classNames="form-control" placeholder=%%DRIVERNAME%%Config.endpoint}} {{else}}
+					<div class="form-control-static">
+						{{model.%%DRIVERNAME%%Config.endpoint}}
+					</div>
+					{{/if}}
+				</div>
+			</div>
+			<div class="row {{if isStep1 'form-group'}}">
+				<div class="col-sm-12 col-md-2 form-label">
+					<label class="form-control-static">API Key</label>
+				</div>
+				<div class="col-sm-12 col-md-10">
+					{{#if isStep1}} {{input type="text" autofocus="autofocus" value=model.%%DRIVERNAME%%Config.apiKey classNames="form-control" placeholder="Your BT Cloud Compute API Key"}} {{else}}
+					<div class="form-control-static">
+						{{model.%%DRIVERNAME%%Config.apiKey}}
+					</div>
+					{{/if}}
+				</div>
+			</div>
+			<div class="row {{if isStep1 'form-group'}}">
+				<div class="col-sm-12 col-md-2 form-label">
+					<label class="form-control-static">Secret Key</label>
+				</div>
+				<div class="col-sm-12 col-md-10">
+					{{#if isStep1}} {{input type="text" value=model.%%DRIVERNAME%%Config.secretKey classNames="form-control" placeholder="Your BT Cloud Compute Secret Key"}} {{else}}
+					<div class="form-control-static">
+						**************************************************************************************
+					</div>
+					{{/if}}
+				</div>
+			</div>
+		</div>
+	</form>
+	{{#if isStep1}} {{top-errors errors=errors}}
+	<div class="footer-actions">
+		<button {{action "cloudAuth"}} name="submit" class="btn btn-primary">Authenticate</button> <button {{action "cancel"}} class="btn btn-link">Cancel</button>
+	</div>
+	{{/if}}
+</section>
 
-    <div class="over-hr r-mt20 r-mb20">
-      <span>ACCOUNT ACCESS</span>
-    </div>
-    <div class="row">
-      <div class="col-sm-12 col-md-2 form-label">
-        <label class="form-control-static">Endpoint</label>
-      </div>
-      <div class="col-sm-12 col-md-4">
-        {{input type="text" value=model.%%DRIVERNAME%%Config.endpoint classNames="form-control"}}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-12 col-md-2 form-label">
-        <label class="form-control-static">API Key</label>
-      </div>
-      <div class="col-sm-12 col-md-10">
-        {{input type="text" value=model.%%DRIVERNAME%%Config.apiKey classNames="form-control" placeholder="Your BT Cloud Compute API Key"}}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-12 col-md-2 form-label">
-        <label class="form-control-static">Secret Key</label>
-      </div>
-      <div class="col-sm-12 col-md-10">
-        {{input type="text" value=model.%%DRIVERNAME%%Config.secretKey classNames="form-control" placeholder="Your BT Cloud Compute Secret Key"}}
-      </div>
-    </div>
+<!-- Step 2 -->
+<section class="horizontal-form r-pt0 {{unless isStep2 'hide'}}">
+	<div class="text-center">
+		<i class="icon icon-spinner icon-spin"></i><i>&nbsp; Authenticating...</i>
+	</div>
+</section>
 
-    <div class="over-hr r-mt20 r-mb20">
-      <span>VIRTUAL MACHINE</span>
-    </div>
-    <div class="row form-group">
-      <div class="col-sm-12 col-md-2 form-label">
-        <label class="form-control-static">Availability Zone</label>
-      </div>
+<!-- Step 3 -->
+<section class="horizontal-form r-pt0 {{unless isGteStep3 'hide'}}">
+	<div class="container-fluid">
+		<div class="over-hr r-mt20 r-mb20">
+			<span>AVAILABILITY ZONE</span>
+		</div>
+		<div class="row {{if isStep3 'form-group'}}">
+			<div class="col-sm-12 col-md-2 form-label">
+				<label class="form-control-static">Availability Zone</label>
+			</div>
       <div class="col-sm-12 col-md-8">
-        {{new-select
-          classNames="form-control"
-          content=zones
-          optionLabelPath='zone'
-          optionValuePath='uuid'
-          value=model.%%DRIVERNAME%%Config.location
-        }}
+        {{#if isStep3}} {{new-select classNames="form-control" content=avzones optionLabelPath='name' optionValuePath='id' value=model.%%DRIVERNAME%%Config.zone }} {{else}}
+        <div class="form-control-static">
+          {{model.%%DRIVERNAME%%Config.zone}}
+        </div>
+        {{/if}}
       </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-12 col-md-2 form-label">
-        <label class="form-control-static">Service Offering</label>
-      </div>
-      <div class="col-sm-12 col-md-10">
-        {{input type="text" value=model.%%DRIVERNAME%%Config.serviceOffering classNames="form-control"}}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-12 col-md-2 form-label">
-        <label class="form-control-static">Template</label>
-      </div>
-      <div class="col-sm-12 col-md-10">
-        {{input type="text" value=model.%%DRIVERNAME%%Config.template classNames="form-control"}}
-      </div>
-    </div>
+		</div>
+	</div>
+	{{#if isStep3}} {{top-errors errors=errors}}
+	<div class="footer-actions">
+		<button {{action "selectZone"}} class="btn btn-primary">Continue</button> <button {{action "cancel"}} class="btn btn-link">Cancel</button>
+	</div>
+	{{/if}}
+</section>
 
-    {{partial "host/add-options"}}
-  </div>
+<!-- Step 4 -->
+<section class="horizontal-form r-pt0 {{unless isStep4 'hide'}}">
+	<div class="text-center">
+		<i class="icon icon-spinner icon-spin"></i><i>&nbsp; Please wait...</i>
+	</div>
+</section>
 
-  {{!-- This component shows errors produced by validate() in the component --}}
-  {{top-errors errors=errors}}
+<!-- Step 5 -->
+<section class="horizontal-form r-pt0 {{unless isGteStep5 'hide'}}">
+	<div class="container-fluid">
+		<div class="over-hr r-mt20 r-mb20">
+			<span>PROJECT</span>
+		</div>
+		<div class="row {{if isStep5 'form-group'}}">
+			<div class="col-sm-12 col-md-2 form-label">
+				<label class="form-control-static">Project</label>
+			</div>
+			<div class="col-sm-12 col-md-8">
+				{{#if isStep5}} {{new-select classNames="form-control" content=projects optionLabelPath='name' optionValuePath='id' value=model.%%DRIVERNAME%%Config.project }} {{else}}
+        <div class="form-control-static">
+				    BetaServices
+        </div>
+        {{/if}}
+			</div>
+		</div>
+	</div>
+	{{#if isStep5}} {{top-errors errors=errors}}
+	<div class="footer-actions">
+		<button {{action "setProject"}} class="btn btn-primary">Continue</button> <button {{action "cancel"}} class="btn btn-link">Cancel</button>
+	</div>
+	{{/if}}
+</section>
 
-  {{!-- This component shows the Create and Cancel buttons --}}
-  {{save-cancel save="save" cancel="cancel"}}
+<!-- Step 6 -->
+<section class="horizontal-form r-pt0 {{unless isStep6 'hide'}}">
+	<div class="text-center">
+		<i class="icon icon-spinner icon-spin"></i><i>&nbsp; Please wait...</i>
+	</div>
+</section>
+
+<!-- Step 7 -->
+<section class="horizontal-form r-pt0 {{unless isGteStep7 'hide'}}">
+	<div class="container-fluid">
+		<div class="over-hr r-mt20 r-mb20">
+			<span>INSTANCE</span>
+		</div>
+		{{partial "host/add-common"}} {{partial "host/add-options"}}
+	</div>
+	{{top-errors errors=errors}} {{save-cancel save="save" cancel="cancel"}}
 </section>
